@@ -38,7 +38,7 @@ public class MenuEntity extends BaseEntity {
 	 * 菜單類別
 	 */
 	@Column(name = "type", nullable = false)
-	private Short type;
+	private Integer type;
 
 	/**
 	 * 菜單價格

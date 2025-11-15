@@ -2,6 +2,7 @@ package com.course.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.course.entity.MorderEntity;
 import com.course.entity.MorderItemEntity;
-import com.course.model.request.MorderVo;
+import com.course.model.request.MorderRequest;
 import com.course.model.response.ApiResponse;
+import com.course.model.vo.MorderVo;
 import com.course.repository.MorderItemRepository;
 import com.course.repository.MorderRepository;
 
@@ -29,30 +31,31 @@ public class MorderService {
 	private ServiceHelper helper;
 
 	@Transactional
-	public ApiResponse<String> addMorder(MorderVo vo) {
-		if (!morderRepository.existsByCode(vo.getCode())) {
-			MorderEntity morderEntity = new MorderEntity();
-			morderEntity.setCode(vo.getCode());
-			morderEntity.setTableNumber(vo.getTableNumber());
-			morderEntity.setMorderStatus(vo.getMorderStatus());
-			morderEntity.setTotalPrice(vo.getTotalPrice());
-			morderEntity.setPaymentStatus(vo.getPaymentStatus());
+	public ApiResponse<String> addMorder(MorderRequest req) {
+		MorderEntity morderEntity = MorderEntity.builder()
+				.code(UUID.randomUUID().toString())
+				.tableNumber(req.getTableNumber())
+				.totalPrice(req.getTotalPrice())
+				.morderStatus(req.getMorderStatus())
+				.paymentStatus(req.getPaymentStatus())
+				.build();
 
-			morderRepository.save(morderEntity);
+		morderRepository.save(morderEntity);
 
-			vo.getMorderItem().stream().map(item -> {
-				MorderItemEntity morderItemEntity = new MorderItemEntity();
-				morderItemEntity.setMorderCode(vo.getCode());
-				morderItemEntity.setMenuId(item.getMenuId());
-				morderItemEntity.setQuantity(item.getQuantity());
-				morderItemEntity.setSubtotal(item.getSubtotal());
-				return morderItemEntity;
-			}).forEach(morderItemRepository::save);
+		List<MorderItemEntity> morderItems = req.getMorderItem().stream().map(item -> {
+			MorderItemEntity morderItemEntity = MorderItemEntity.builder()
+					.morderCode(morderEntity.getCode())
+					.menuId(item.getMenuId())
+					.quantity(item.getQuantity())
+					.subtotal(item.getSubtotal())
+					.build();
 
-			return ApiResponse.success("訂單新增成功");
-		} else {
-			return ApiResponse.error("401", "已有此訂單");
-		}
+			return morderItemEntity;
+		}).collect(Collectors.toList());
+
+		morderItemRepository.saveAll(morderItems);
+
+		return ApiResponse.success("訂單新增成功");
 	}
 
 	@Transactional
@@ -103,9 +106,9 @@ public class MorderService {
 		List<MorderVo> voList = morderRepository.findByTableNumAndPayStatus(tableNum, (short) 0);
 
 		voList.stream().forEach(vo -> {
-//			if (vo.getCode() != null && !vo.getCode().isEmpty()) {
+			// if (vo.getCode() != null && !vo.getCode().isEmpty()) {
 			vo.setMorderItem(morderItemRepository.findByMorderCodeToVo(vo.getCode()));
-//			}
+			// }
 		});
 		return ApiResponse.success(voList);
 	}

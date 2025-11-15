@@ -1,4 +1,4 @@
-package com.course.model.request;
+package com.course.model.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class StaffVo {
-	
+
 	private Long id;
 	@NotBlank
 	@NotNull

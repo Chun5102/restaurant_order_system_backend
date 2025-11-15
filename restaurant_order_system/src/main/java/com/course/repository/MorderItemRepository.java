@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.course.entity.MorderItemEntity;
-import com.course.model.request.MorderItemVo;
+import com.course.model.vo.MorderItemVo;
 
 @Repository
 public interface MorderItemRepository extends JpaRepository<MorderItemEntity, Long> {

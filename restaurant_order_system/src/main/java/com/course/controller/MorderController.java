@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.course.model.request.MorderVo;
+import com.course.model.request.MorderRequest;
 import com.course.model.response.ApiResponse;
+import com.course.model.vo.MorderVo;
 import com.course.service.MorderService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/order")
+@Tag(name = "Order", description = "訂單相關 API")
 public class MorderController {
 
 	@Autowired
@@ -25,8 +29,8 @@ public class MorderController {
 
 	@Operation(summary = "新增訂單資料", tags = "訂單")
 	@PostMapping("/add")
-	public ApiResponse<String> addMorder(@RequestBody MorderVo vo) {
-		return morderService.addMorder(vo);
+	public ApiResponse<String> addMorder(@Valid @RequestBody MorderRequest req) {
+		return morderService.addMorder(req);
 	}
 
 	@Operation(summary = "更新訂單資料", tags = "訂單")

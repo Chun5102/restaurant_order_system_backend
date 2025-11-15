@@ -31,14 +31,14 @@ public class MorderEntity extends BaseEntity {
 	/**
 	 * 訂單自訂編號
 	 */
-	@Column(name = "code", nullable = false)
+	@Column(name = "code", nullable = false, unique = true)
 	private String code;
 
 	/**
 	 * 訂單桌號
 	 */
 	@Column(name = "table_number", nullable = false)
-	private Integer tableNumber;
+	private String tableNumber;
 
 	/**
 	 * 訂單總價
@@ -56,5 +56,5 @@ public class MorderEntity extends BaseEntity {
 	 * 訂單付款狀態
 	 */
 	@Column(name = "payment_status", nullable = false)
-	private Short paymentStatus;
+	private String paymentStatus;
 }

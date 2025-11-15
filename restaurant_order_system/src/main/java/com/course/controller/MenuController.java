@@ -19,10 +19,12 @@ import com.course.model.response.MenuManageResponse;
 import com.course.service.MenuService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/menu")
+@Tag(name = "Menu", description = "菜單相關 API")
 public class MenuController {
 
 	@Autowired
