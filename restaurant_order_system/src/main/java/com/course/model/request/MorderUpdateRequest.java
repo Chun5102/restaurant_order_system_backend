@@ -13,12 +13,12 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Schema(description = "上傳新增訂單")
-public class MorderRequest {
+@Schema(description = "上傳修改訂單")
+public class MorderUpdateRequest {
 
 	@NotNull
-	@Schema(description = "訂單桌號", example = "1")
-	private String tableNumber;
+	@Schema(description = "訂單自訂編號", example = "550e8400-e29b-41d4-a716-446655440000")
+	private String code;
 
 	@NotNull
 	@Schema(description = "訂單狀態", example = "1")
@@ -36,7 +36,7 @@ public class MorderRequest {
 	@Schema(description = "訂單細項")
 	private List<MorderItemVo> morderItem = new ArrayList<>();
 
-	public MorderRequest() {
+	public MorderUpdateRequest() {
 		super();
 		this.morderItem = new ArrayList<>();
 	}

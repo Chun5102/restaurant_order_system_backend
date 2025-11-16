@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.course.entity.MorderEntity;
-import com.course.model.vo.MorderVo;
 
 @Repository
 public interface MorderRepository extends JpaRepository<MorderEntity, Long> {
@@ -18,6 +17,6 @@ public interface MorderRepository extends JpaRepository<MorderEntity, Long> {
 
 	void deleteByCode(String code);
 
-	@Query("SELECT new com.course.model.MorderVo(m.code, m.morderStatus,m.totalPrice) FROM MorderEntity m WHERE m.tableNumber = ?1 AND m.paymentStatus = ?2")
-	List<MorderVo> findByTableNumAndPayStatus(Integer tableNumber, Short paymentStatus);
+	@Query("SELECT M FROM MorderEntity M WHERE m.tableNumber = ?1 AND m.paymentStatus = '0'")
+	List<MorderEntity> getTableNumNotPay(Integer tableNumber);
 }

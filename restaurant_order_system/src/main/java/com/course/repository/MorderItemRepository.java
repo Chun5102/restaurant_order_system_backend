@@ -14,7 +14,7 @@ public interface MorderItemRepository extends JpaRepository<MorderItemEntity, Lo
 
 	List<MorderItemEntity> findByMorderCode(String code);
 
-	@Query("SELECT new com.course.model.MorderItemVo(m.name, mi.quantity,mi.subtotal)" + " FROM MorderItemEntity mi"
-			+ " JOIN MenuEntity m ON m.id = mi.menuId" + " WHERE mi.morderCode = ?1")
+	@Query("SELECT new com.course.model.MorderItemVo(M.name, MI.quantity,MI.subtotal)" + " FROM MorderItemEntity MI"
+			+ " JOIN MenuEntity M ON M.id = MI.menuId" + " WHERE MI.morderCode = ?1")
 	List<MorderItemVo> findByMorderCodeToVo(String code);
 }

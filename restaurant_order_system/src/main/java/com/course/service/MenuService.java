@@ -92,7 +92,7 @@ public class MenuService {
 		if (menuEntity != null) {
 			return ApiResponse.success(helper.menuConvertToResponse(menuEntity));
 		}
-		return ApiResponse.error("403", "搜索失敗");
+		return ApiResponse.error("402", "搜索失敗");
 	}
 
 	public ApiResponse<List<MenuManageResponse>> getManageMenu() {
