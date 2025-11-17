@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.course.entity.MenuEntity;
+import com.course.enums.MenuStatus;
 import com.course.model.request.MenuRequest;
 import com.course.model.response.ApiResponse;
 import com.course.model.response.MenuManageResponse;
 import com.course.repository.MenuRepository;
 
-import enums.MenuStatus;
 import jakarta.transaction.Transactional;
 
 @Service

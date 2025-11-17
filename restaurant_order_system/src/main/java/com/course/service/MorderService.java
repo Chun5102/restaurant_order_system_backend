@@ -78,9 +78,10 @@ public class MorderService {
 						.collect(Collectors.toMap(MorderItemEntity::getMenuId, item -> item));
 
 				List<MorderItemEntity> itemsToDelete = morderItems.stream()
-						.filter(item -> !req.getMorderItem().contains(item))
+						.filter(item -> req.getMorderItem().stream()
+								.noneMatch(reqItem -> reqItem.getMenuId().equals(item.getMenuId())))
 						.collect(Collectors.toList());
-				if (itemsToDelete != null && !itemsToDelete.isEmpty()) {
+				if (!itemsToDelete.isEmpty()) {
 					morderItemRepository.deleteAllInBatch(itemsToDelete);
 				}
 

@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/menu")
-@Tag(name = "Menu", description = "菜單相關 API")
+@Tag(name = "菜單", description = "菜單相關 API")
 public class MenuController {
 
 	@Autowired

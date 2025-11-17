@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/order")
-@Tag(name = "Order", description = "訂單相關 API")
+@Tag(name = "訂單", description = "訂單相關 API")
 public class MorderController {
 
 	@Autowired

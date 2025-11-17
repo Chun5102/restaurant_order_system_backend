@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-RestaurantOrderSystemApplication<restaurant_order_system>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.course.RestaurantOrderSystemApplication",
+      "projectName": "restaurant_order_system",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
