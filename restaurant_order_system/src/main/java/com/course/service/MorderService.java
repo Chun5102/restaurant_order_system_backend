@@ -13,8 +13,8 @@ import com.course.entity.MorderItemEntity;
 import com.course.model.request.MorderRequest;
 import com.course.model.request.MorderUpdateRequest;
 import com.course.model.response.ApiResponse;
+import com.course.model.response.MorderItemResponse;
 import com.course.model.response.MorderResponse;
-import com.course.model.vo.MorderItemVo;
 import com.course.repository.MorderItemRepository;
 import com.course.repository.MorderRepository;
 
@@ -47,8 +47,10 @@ public class MorderService {
 				MorderItemEntity morderItemEntity = MorderItemEntity.builder()
 						.morderCode(morderEntity.getCode())
 						.menuId(item.getMenuId())
+						.menuName(item.getMenuName())
 						.quantity(item.getQuantity())
 						.subtotal(item.getSubtotal())
+						.isActive(true)
 						.build();
 
 				return morderItemEntity;
@@ -75,32 +77,44 @@ public class MorderService {
 			if (req.getMorderItem() != null && !req.getMorderItem().isEmpty()) {
 				List<MorderItemEntity> morderItems = morderItemRepository.findByMorderCode(req.getCode());
 				Map<Long, MorderItemEntity> morderItemMap = morderItems.stream()
-						.collect(Collectors.toMap(MorderItemEntity::getMenuId, item -> item));
+						.collect(Collectors.toMap(MorderItemEntity::getId, item -> item));
 
 				List<MorderItemEntity> itemsToDelete = morderItems.stream()
 						.filter(item -> req.getMorderItem().stream()
-								.noneMatch(reqItem -> reqItem.getMenuId().equals(item.getMenuId())))
+								.filter(reqItem -> reqItem.getId() != null)
+								.noneMatch(reqItem -> reqItem.getId().equals(item.getId())))
 						.collect(Collectors.toList());
 				if (!itemsToDelete.isEmpty()) {
-					morderItemRepository.deleteAllInBatch(itemsToDelete);
+					itemsToDelete.forEach(item -> item.setIsActive(false));
+					morderItemRepository.saveAll(itemsToDelete);
 				}
 
 				List<MorderItemEntity> updateMorderItem = req.getMorderItem().stream().map(item -> {
-					MorderItemEntity morderItemEntity = morderItemMap.get(item.getMenuId());
-					if (morderItemEntity == null) {
-						morderItemEntity = new MorderItemEntity();
-						morderItemEntity.setMenuId(item.getMenuId());
-						morderItemEntity.setMorderCode(req.getCode());
+					MorderItemEntity morderItemEntity;
+					if (item.getId() != null) {
+						morderItemEntity = morderItemMap.get(item.getId());
+						morderItemEntity.setQuantity(item.getQuantity());
+						morderItemEntity.setSubtotal(item.getSubtotal());
+						morderItemEntity.setIsActive(true);
+					} else {
+						morderItemEntity = MorderItemEntity.builder()
+								.morderCode(req.getCode())
+								.menuId(item.getMenuId())
+								.menuName(item.getMenuName())
+								.quantity(item.getQuantity())
+								.subtotal(item.getSubtotal())
+								.isActive(true)
+								.build();
 					}
-					morderItemEntity.setQuantity(item.getQuantity());
-					morderItemEntity.setSubtotal(item.getSubtotal());
 					return morderItemEntity;
 				}).collect(Collectors.toList());
 
 				morderItemRepository.saveAll(updateMorderItem);
 			}
 			return ApiResponse.success("訂單更新成功");
-		} else {
+		} else
+
+		{
 			return ApiResponse.error("401", "無此訂單");
 		}
 	}
@@ -109,10 +123,16 @@ public class MorderService {
 	public ApiResponse deleteMorder(String code) {
 		if (morderRepository.existsByCode(code)) {
 
-			morderRepository.deleteByCode(code);
+			MorderEntity morderEntity = morderRepository.findByCode(code);
+			morderEntity.setMorderStatus("0");
+
+			morderRepository.save(morderEntity);
 
 			List<MorderItemEntity> morderItemList = morderItemRepository.findByMorderCode(code);
-			morderItemRepository.deleteAllInBatch(morderItemList);
+			morderItemList.forEach(item -> item.setIsActive(false));
+
+			morderItemRepository.saveAll(morderItemList);
+
 			return ApiResponse.success("訂單刪除成功");
 		} else {
 			return ApiResponse.error("401", "無此訂單");
@@ -122,8 +142,18 @@ public class MorderService {
 	public ApiResponse<List<MorderResponse>> getTableNumNotPay(Integer tableNum) {
 		List<MorderEntity> morderList = morderRepository.getTableNumNotPay(tableNum);
 
-		List<MorderResponse> resList = morderList.stream().map(morder -> {
-			List<MorderItemVo> morderItems = morderItemRepository.findByMorderCodeToVo(morder.getCode());
+		List<MorderResponse> morderListRes = morderList.stream().map(morder -> {
+			List<MorderItemResponse> morderItems = morderItemRepository.findByMorderCode(morder.getCode()).stream()
+					.map(morderItem -> {
+						MorderItemResponse morderRes = MorderItemResponse.builder()
+								.Id(morderItem.getId())
+								.menuId(morderItem.getMenuId())
+								.menuName(morderItem.getMenuName())
+								.quantity(morderItem.getQuantity())
+								.subtotal(morderItem.getSubtotal())
+								.build();
+						return morderRes;
+					}).collect(Collectors.toList());
 
 			MorderResponse res = MorderResponse.builder()
 					.code(morder.getCode())
@@ -135,7 +165,7 @@ public class MorderService {
 					.build();
 			return res;
 		}).collect(Collectors.toList());
-		return ApiResponse.success(resList);
+		return ApiResponse.success(morderListRes);
 	}
 
 }

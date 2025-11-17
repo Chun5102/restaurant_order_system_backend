@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.course.model.vo.MorderItemVo;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +25,7 @@ public class MorderResponse {
 
 	private String paymentStatus;
 
-	private List<MorderItemVo> morderItem = new ArrayList<>();
+	private List<MorderItemResponse> morderItem = new ArrayList<>();
 
 	public MorderResponse() {
 		super();

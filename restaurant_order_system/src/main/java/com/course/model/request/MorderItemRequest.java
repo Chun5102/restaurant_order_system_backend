@@ -1,4 +1,4 @@
-package com.course.model.vo;
+package com.course.model.request;
 
 import java.math.BigDecimal;
 
@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "訂單細項接收和上傳")
-public class MorderItemVo {
+@Schema(description = "訂單細項新增上傳")
+public class MorderItemRequest {
 
 	@NotNull
 	@Schema(description = "菜單ID", example = "1")
@@ -22,7 +22,7 @@ public class MorderItemVo {
 
 	@NotNull
 	@Schema(description = "菜單名字", example = "牛排")
-	private String name;
+	private String menuName;
 
 	@NotNull
 	@Schema(description = "訂單細項數量", example = "1")

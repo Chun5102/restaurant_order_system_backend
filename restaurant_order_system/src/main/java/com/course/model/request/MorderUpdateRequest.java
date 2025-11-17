@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.course.model.vo.MorderItemVo;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,7 +32,7 @@ public class MorderUpdateRequest {
 
 	@NotNull
 	@Schema(description = "訂單細項")
-	private List<MorderItemVo> morderItem = new ArrayList<>();
+	private List<MorderItemUpdateRequest> morderItem = new ArrayList<>();
 
 	public MorderUpdateRequest() {
 		super();

@@ -42,6 +42,12 @@ public class MorderItemEntity {
 	private Long menuId;
 
 	/**
+	 * 菜單名字
+	 */
+	@Column(name = "menu_name", nullable = false)
+	private String menuName;
+
+	/**
 	 * 餐點數量
 	 */
 	@Column(name = "quantity", nullable = false)
@@ -52,4 +58,10 @@ public class MorderItemEntity {
 	 */
 	@Column(name = "subtotal", nullable = false)
 	private BigDecimal subtotal;
+
+	/**
+	 * 訂單細項狀態
+	 */
+	@Column(name = "is_active", nullable = false)
+	private Boolean isActive;
 }
