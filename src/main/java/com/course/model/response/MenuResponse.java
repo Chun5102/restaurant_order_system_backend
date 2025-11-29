@@ -22,7 +22,7 @@ public class MenuResponse {
     private String name;
 
     @Schema(description = "菜單類別")
-    private Integer type;
+    private Integer category;
 
     @Schema(description = "菜單價格")
     private BigDecimal price;

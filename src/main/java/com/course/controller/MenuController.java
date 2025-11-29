@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.course.model.request.MenuRequest;
 import com.course.model.response.ApiResponse;
 import com.course.model.response.MenuManageResponse;
+import com.course.model.response.MenuResponse;
 import com.course.service.MenuService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,7 +57,7 @@ public class MenuController {
 
 	@Operation(summary = "取得使用者菜單資料", tags = "菜單")
 	@GetMapping("/getMenus")
-	public ApiResponse<List<MenuManageResponse>> getUserMenu() {
+	public ApiResponse<List<MenuResponse>> getUserMenu() {
 		return menuService.getUserMenu();
 	}
 

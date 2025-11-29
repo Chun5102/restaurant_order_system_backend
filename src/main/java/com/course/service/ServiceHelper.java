@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.course.entity.MenuEntity;
 import com.course.entity.StaffEntity;
 import com.course.model.response.MenuManageResponse;
+import com.course.model.response.MenuResponse;
 import com.course.model.vo.StaffVo;
 
 @Service
@@ -33,11 +34,11 @@ public class ServiceHelper {
 		return vo;
 	}
 
-	public MenuManageResponse menuConvertToResponse(MenuEntity menuEntity) {
+	public MenuManageResponse menuConvertToManageResponse(MenuEntity menuEntity) {
 		MenuManageResponse menuManageResponse = MenuManageResponse.builder()
 				.id(menuEntity.getId())
 				.name(menuEntity.getName())
-				.type(menuEntity.getType())
+				.category(menuEntity.getCategory())
 				.price(menuEntity.getPrice())
 				.description(menuEntity.getDescription())
 				.stock(menuEntity.getStock())
@@ -46,6 +47,19 @@ public class ServiceHelper {
 				.build();
 
 		return menuManageResponse;
+	}
+
+	public MenuResponse menuConvertToResponse(MenuEntity menuEntity) {
+		MenuResponse menuResponse = MenuResponse.builder()
+				.id(menuEntity.getId())
+				.name(menuEntity.getName())
+				.category(menuEntity.getCategory())
+				.price(menuEntity.getPrice())
+				.description(menuEntity.getDescription())
+				.imageBase64(generateImageBase64(menuEntity.getImageData(), menuEntity.getImageType()))
+				.build();
+
+		return menuResponse;
 	}
 
 	/**

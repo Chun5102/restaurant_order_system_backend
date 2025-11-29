@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ApiResponse<T> {
 
-	private String resposeCode;
+	private String responseCode;
 
 	private String message;
 
@@ -29,7 +29,7 @@ public class ApiResponse<T> {
 
 	public ApiResponse(String resposeCode, String message, T data) {
 		super();
-		this.resposeCode = resposeCode;
+		this.responseCode = resposeCode;
 		this.message = message;
 		this.data = data;
 	}

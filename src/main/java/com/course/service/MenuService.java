@@ -13,6 +13,7 @@ import com.course.enums.MenuStatus;
 import com.course.model.request.MenuRequest;
 import com.course.model.response.ApiResponse;
 import com.course.model.response.MenuManageResponse;
+import com.course.model.response.MenuResponse;
 import com.course.repository.MenuRepository;
 
 import jakarta.transaction.Transactional;
@@ -33,7 +34,7 @@ public class MenuService {
 
 		MenuEntity menuEntity = MenuEntity.builder()
 				.name(req.getName())
-				.type(req.getType())
+				.category(req.getCategory())
 				.price(req.getPrice())
 				.description(req.getDescription())
 				.stock(req.getStock())
@@ -56,7 +57,7 @@ public class MenuService {
 			MenuEntity updateMenuEntity = MenuEntity.builder()
 					.id(menuEntity.getId())
 					.name(req.getName())
-					.type(req.getType())
+					.category(req.getCategory())
 					.price(req.getPrice())
 					.description(req.getDescription())
 					.stock(req.getStock())
@@ -90,20 +91,20 @@ public class MenuService {
 	public ApiResponse<MenuManageResponse> getMenuById(Long id) {
 		MenuEntity menuEntity = menuRepository.findById(id).orElse(null);
 		if (menuEntity != null) {
-			return ApiResponse.success(helper.menuConvertToResponse(menuEntity));
+			return ApiResponse.success(helper.menuConvertToManageResponse(menuEntity));
 		}
 		return ApiResponse.error("402", "搜索失敗");
 	}
 
 	public ApiResponse<List<MenuManageResponse>> getManageMenu() {
 		List<MenuManageResponse> menuList = menuRepository.findAll().stream().map((MenuEntity menu) -> {
-			return helper.menuConvertToResponse(menu);
+			return helper.menuConvertToManageResponse(menu);
 		}).collect(Collectors.toList());
 		return ApiResponse.success(menuList);
 	}
 
-	public ApiResponse<List<MenuManageResponse>> getUserMenu() {
-		List<MenuManageResponse> menuList = menuRepository.findOnSaleMenu().stream().map((MenuEntity menu) -> {
+	public ApiResponse<List<MenuResponse>> getUserMenu() {
+		List<MenuResponse> menuList = menuRepository.findOnSaleMenu().stream().map((MenuEntity menu) -> {
 			return helper.menuConvertToResponse(menu);
 		}).collect(Collectors.toList());
 		return ApiResponse.success(menuList);

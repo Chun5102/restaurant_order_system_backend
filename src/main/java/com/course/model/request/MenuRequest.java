@@ -18,7 +18,7 @@ public class MenuRequest {
 
     @NotNull
     @Schema(description = "菜單類別", example = "主食")
-    private Integer type;
+    private Integer category;
 
     @NotNull
     @Schema(description = "菜單價格", example = "400")

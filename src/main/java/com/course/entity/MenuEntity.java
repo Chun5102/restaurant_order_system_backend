@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,8 +38,8 @@ public class MenuEntity extends BaseEntity {
 	/**
 	 * 菜單類別
 	 */
-	@Column(name = "type", nullable = false)
-	private Integer type;
+	@Column(name = "category", nullable = false)
+	private Integer category;
 
 	/**
 	 * 菜單價格
@@ -67,7 +68,8 @@ public class MenuEntity extends BaseEntity {
 	/**
 	 * 菜單圖片資料
 	 */
-	@Column(name = "imageData")
+	@Lob
+	@Column(name = "imageData", columnDefinition = "LONGBLOB")
 	private byte[] imageData;
 
 	/**
