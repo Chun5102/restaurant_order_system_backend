@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.course.entity.MenuEntity;
@@ -29,6 +32,10 @@ public class MenuService {
 
 	@Transactional
 	public ApiResponse addMenu(MenuRequest req) throws IOException {
+		boolean isExist = menuRepository.existsByName(req.getName());
+		if (isExist) {
+			return ApiResponse.error("403", "菜單名稱已存在");
+		}
 
 		ImageInfo imageInfo = processBase64Image(req.getImageBase64(), req.getImageType());
 
@@ -103,10 +110,31 @@ public class MenuService {
 		return ApiResponse.success(menuList);
 	}
 
-	public ApiResponse<List<MenuResponse>> getUserMenu() {
-		List<MenuResponse> menuList = menuRepository.findOnSaleMenu().stream().map((MenuEntity menu) -> {
-			return helper.menuConvertToResponse(menu);
-		}).collect(Collectors.toList());
+	public ApiResponse<Page<MenuResponse>> getUserMenu(String category, Integer page) {
+		Integer pageSize = 6;
+		if (page <= 0) {
+			page = 1;
+		} else {
+			Integer firstPage = 1;
+			Pageable firstpageable = PageRequest.of(firstPage - 1, pageSize);
+
+			Page<MenuEntity> firstPageResult = menuRepository.getMenuByCategory(category, firstpageable);
+			if (firstPageResult.isEmpty()) {
+				return ApiResponse.error("402", "搜索失敗");
+			}
+
+			Integer lastPage = firstPageResult.getTotalPages();
+			if (page > lastPage) {
+				page = lastPage;
+			}
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, pageSize);
+		Page<MenuResponse> menuList = menuRepository.getMenuByCategory(category, pageable)
+				.map((MenuEntity menu) -> {
+					return helper.menuConvertToResponse(menu);
+				});
+
 		return ApiResponse.success(menuList);
 	}
 

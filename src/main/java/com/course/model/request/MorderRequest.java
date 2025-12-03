@@ -16,19 +16,11 @@ public class MorderRequest {
 
 	@NotNull
 	@Schema(description = "訂單桌號", example = "1")
-	private String tableNumber;
-
-	@NotNull
-	@Schema(description = "訂單狀態", example = "1")
-	private String morderStatus;
+	private Integer tableId;
 
 	@NotNull
 	@Schema(description = "訂單總價", example = "999")
 	private BigDecimal totalPrice;
-
-	@NotNull
-	@Schema(description = "訂單付款狀態", example = "1")
-	private String paymentStatus;
 
 	@NotNull
 	@Schema(description = "訂單細項")

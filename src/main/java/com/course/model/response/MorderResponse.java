@@ -17,7 +17,7 @@ public class MorderResponse {
 
 	private String code;
 
-	private String tableNumber;
+	private Integer tableId;
 
 	private String morderStatus;
 

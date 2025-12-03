@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.course.model.request.MenuRequest;
@@ -45,20 +47,21 @@ public class MenuController {
 
 	@Operation(summary = "刪除菜單資料", tags = "菜單")
 	@PutMapping("/deleteMenu/{id}")
-	public ApiResponse<String> deleteMenu(@PathVariable Long id) {
+	public ApiResponse<String> deleteMenu(@PathVariable("id") Long id) {
 		return menuService.deleteMenu(id);
 	}
 
 	@Operation(summary = "取得編輯菜單(id)", tags = "菜單")
 	@GetMapping("edit/{id}")
-	public ApiResponse<MenuManageResponse> getMenuById(@PathVariable Long id) {
+	public ApiResponse<MenuManageResponse> getMenuById(@PathVariable("id") Long id) {
 		return menuService.getMenuById(id);
 	}
 
 	@Operation(summary = "取得使用者菜單資料", tags = "菜單")
 	@GetMapping("/getMenus")
-	public ApiResponse<List<MenuResponse>> getUserMenu() {
-		return menuService.getUserMenu();
+	public ApiResponse<Page<MenuResponse>> getUserMenu(@RequestParam String category,
+			@RequestParam Integer page) {
+		return menuService.getUserMenu(category, page);
 	}
 
 	@Operation(summary = "取得管理菜單資料", tags = "菜單")

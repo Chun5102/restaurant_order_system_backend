@@ -17,6 +17,9 @@ public interface MorderRepository extends JpaRepository<MorderEntity, Long> {
 
 	void deleteByCode(String code);
 
-	@Query("SELECT M FROM MorderEntity M WHERE M.tableNumber = ?1 AND M.paymentStatus = '0'")
-	List<MorderEntity> getTableNumNotPay(Integer tableNumber);
+	@Query("SELECT M FROM MorderEntity M WHERE M.tableId = ?1 AND M.paymentStatus = '未付款'")
+	List<MorderEntity> getTableNotPay(Integer tableId);
+
+	boolean existsByTableIdAndPaymentStatus(Integer tableId, String paymentStatus);
+
 }

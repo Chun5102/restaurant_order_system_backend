@@ -29,26 +29,26 @@ public class MorderController {
 	private MorderService morderService;
 
 	@Operation(summary = "新增訂單資料", tags = "訂單")
-	@PostMapping("/add")
+	@PostMapping("/addOrder")
 	public ApiResponse addMorder(@Valid @RequestBody MorderRequest req) {
 		return morderService.addMorder(req);
 	}
 
 	@Operation(summary = "更新訂單資料", tags = "訂單")
-	@PostMapping("/update")
+	@PostMapping("/updateOrder")
 	public ApiResponse updateMorder(@Valid @RequestBody MorderUpdateRequest req) {
 		return morderService.updateMorder(req);
 	}
 
 	@Operation(summary = "刪除訂單資料", tags = "訂單")
-	@PostMapping("/delete/{code}")
+	@PostMapping("/deleteOrder/{code}")
 	public ApiResponse deleteMorder(@PathVariable String code) {
 		return morderService.deleteMorder(code);
 	}
 
 	@Operation(summary = "取得未付款訂單(tableNumber)", tags = "訂單")
-	@GetMapping("/getTableNumOrder/{tableNumber}")
-	public ApiResponse<List<MorderResponse>> getTableNumNotPay(@PathVariable Integer tableNumber) {
-		return morderService.getTableNumNotPay(tableNumber);
+	@GetMapping("/getTableOrder/{tableId}")
+	public ApiResponse<List<MorderResponse>> getTableNotPay(@PathVariable Integer tableId) {
+		return morderService.getTableNotPay(tableId);
 	}
 }

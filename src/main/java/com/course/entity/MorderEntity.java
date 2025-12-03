@@ -37,8 +37,8 @@ public class MorderEntity extends BaseEntity {
 	/**
 	 * 訂單桌號
 	 */
-	@Column(name = "table_number", nullable = false)
-	private String tableNumber;
+	@Column(name = "table_id", nullable = false)
+	private Integer tableId;
 
 	/**
 	 * 訂單總價
