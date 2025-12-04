@@ -57,11 +57,6 @@ public class TableService {
             return ApiResponse.error("401", "無此桌子");
         }
 
-        boolean hasPendingOrder = morderRepository.existsByTableIdAndPaymentStatus(tableEntity.getId(), "已付款");
-        if (hasPendingOrder) {
-            return ApiResponse.error("403", "該桌已有未付款訂單，請用原本手機完成點餐");
-        }
-
         tableEntity.setStatus("使用中");
         tableEntity.setOpenedAt(LocalDateTime.now());
         tableRepository.save(tableEntity);

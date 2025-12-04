@@ -41,10 +41,17 @@ public class MorderEntity extends BaseEntity {
 	private Integer tableId;
 
 	/**
-	 * 訂單總價
+	 * 訂單總價=>主訂單原始總價+加點訂單原始總價
+	 * 主訂單專屬
 	 */
-	@Column(name = "total_price", nullable = false)
+	@Column(name = "total_price", nullable = true)
 	private BigDecimal totalPrice;
+
+	/**
+	 * 訂單原始總價
+	 */
+	@Column(name = "base_price", nullable = false)
+	private BigDecimal basePrice;
 
 	/**
 	 * 訂單狀態
@@ -57,4 +64,23 @@ public class MorderEntity extends BaseEntity {
 	 */
 	@Column(name = "payment_status", nullable = false)
 	private String paymentStatus;
+
+	/**
+	 * 訂單是否刪除
+	 */
+	@Column(name = "is_active", nullable = false)
+	private Boolean isActive;
+
+	/**
+	 * 訂單是否為加點
+	 */
+	@Column(name = "is_add_on", nullable = false)
+	private Boolean isAddOn;
+
+	/**
+	 * 訂單主訂單編號
+	 * 訂單為加點才有值
+	 */
+	@Column(name = "original_morder_code", nullable = true)
+	private String originalMorderCode;
 }

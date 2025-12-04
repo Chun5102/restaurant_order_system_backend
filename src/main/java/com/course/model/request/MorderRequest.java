@@ -1,6 +1,5 @@
 package com.course.model.request;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +16,6 @@ public class MorderRequest {
 	@NotNull
 	@Schema(description = "訂單桌號", example = "1")
 	private Integer tableId;
-
-	@NotNull
-	@Schema(description = "訂單總價", example = "999")
-	private BigDecimal totalPrice;
 
 	@NotNull
 	@Schema(description = "訂單細項")

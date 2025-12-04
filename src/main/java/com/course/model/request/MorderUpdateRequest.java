@@ -1,9 +1,5 @@
 package com.course.model.request;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,19 +19,15 @@ public class MorderUpdateRequest {
 	private String morderStatus;
 
 	@NotNull
-	@Schema(description = "訂單總價", example = "999")
-	private BigDecimal totalPrice;
-
-	@NotNull
 	@Schema(description = "訂單付款狀態", example = "1")
 	private String paymentStatus;
 
-	@NotNull
-	@Schema(description = "訂單細項")
-	private List<MorderItemUpdateRequest> morderItem = new ArrayList<>();
+	// @NotNull
+	// @Schema(description = "訂單細項")
+	// private List<MorderItemUpdateRequest> morderItem = new ArrayList<>();
 
-	public MorderUpdateRequest() {
-		super();
-		this.morderItem = new ArrayList<>();
-	}
+	// public MorderUpdateRequest() {
+	// super();
+	// this.morderItem = new ArrayList<>();
+	// }
 }

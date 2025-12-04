@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "morder_item")
-public class MorderItemEntity extends BaseEntity {
+public class MorderItemEntity {
 
 	/**
 	 * 訂單細項編號
