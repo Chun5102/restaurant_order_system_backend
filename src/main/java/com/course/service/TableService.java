@@ -57,13 +57,18 @@ public class TableService {
             return ApiResponse.error("401", "無此桌子");
         }
 
-        tableEntity.setStatus("使用中");
-        tableEntity.setOpenedAt(LocalDateTime.now());
-        tableRepository.save(tableEntity);
+        LocalDateTime openTime = tableEntity.getOpenedAt();
+        if (tableEntity.getStatus().equals("空閒")) {
+            openTime = LocalDateTime.now();
+
+            tableEntity.setStatus("使用中");
+            tableEntity.setOpenedAt(openTime);
+            tableRepository.save(tableEntity);
+        }
 
         TableResponse tableResponse = TableResponse.builder()
                 .id(tableEntity.getId())
-                .openedAt(tableEntity.getOpenedAt())
+                .openedAt(openTime)
                 .qrCode(tableEntity.getCode())
                 .build();
         return ApiResponse.success(tableResponse);
