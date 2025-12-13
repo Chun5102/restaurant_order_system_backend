@@ -1,0 +1,10 @@
+<fontFamilies>
+    <fontFamily name="NotoSansCJKtc">
+        <normal>fonts/NotoSansCJKtc-Regular.ttf</normal>
+        <bold>fonts/NotoSansCJKtc-Bold.ttf</bold>
+        <italic>fonts/NotoSansCJKtc-Italic.ttf</italic>
+        <boldItalic>fonts/NotoSansCJKtc-BoldItalic.ttf</boldItalic>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+</fontFamilies>

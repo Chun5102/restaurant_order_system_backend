@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.course.entity.TableEntity;
+import com.course.enums.ResultCode;
+import com.course.model.dto.TableStatusDto;
 import com.course.model.request.TableRequest;
 import com.course.model.response.ApiResponse;
 import com.course.model.response.TableResponse;
-import com.course.repository.MorderRepository;
+import com.course.model.response.TableStatusResponse;
+import com.course.repository.MainOrderRepository;
 import com.course.repository.TableRepository;
+import com.course.utils.JwtUtil;
 
 import jakarta.transaction.Transactional;
 
@@ -21,10 +25,13 @@ public class TableService {
     private TableRepository tableRepository;
 
     @Autowired
-    private MorderRepository morderRepository;
+    private MainOrderRepository mainOrderRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Transactional
-    public ApiResponse addTable() {
+    public ApiResponse<Object> addTable() {
 
         TableEntity tableEntity = TableEntity.builder()
                 .openedAt(null)
@@ -36,7 +43,7 @@ public class TableService {
         return ApiResponse.success();
     }
 
-    public ApiResponse updateTable(Integer id, TableRequest req) {
+    public ApiResponse<Object> updateTable(Integer id, TableRequest req) {
         TableEntity tableEntity = tableRepository.findById(id).orElse(null);
         if (tableEntity != null) {
             tableEntity.setStatus(req.getStatus());
@@ -45,33 +52,43 @@ public class TableService {
             }
             tableRepository.save(tableEntity);
         } else {
-            return ApiResponse.error("401", "無此桌子");
+            return ApiResponse.error(ResultCode.TABLE_NOT_EXIST);
         }
         return ApiResponse.success();
     }
 
-    public ApiResponse<TableResponse> openTable(String code) {
+    public ApiResponse<String> openTable(String code) {
 
         TableEntity tableEntity = tableRepository.findByCode(code);
         if (tableEntity == null) {
-            return ApiResponse.error("401", "無此桌子");
+            return ApiResponse.error(ResultCode.TABLE_NOT_EXIST);
         }
 
-        LocalDateTime openTime = tableEntity.getOpenedAt();
-        if (tableEntity.getStatus().equals("空閒")) {
-            openTime = LocalDateTime.now();
+        if ("空閒".equals(tableEntity.getStatus())) {
+            LocalDateTime now = LocalDateTime.now();
 
             tableEntity.setStatus("使用中");
-            tableEntity.setOpenedAt(openTime);
+            tableEntity.setOpenedAt(now);
             tableRepository.save(tableEntity);
         }
 
-        TableResponse tableResponse = TableResponse.builder()
-                .id(tableEntity.getId())
-                .openedAt(openTime)
-                .qrCode(tableEntity.getCode())
-                .build();
-        return ApiResponse.success(tableResponse);
+        String token = jwtUtil.generateTableToken(tableEntity);
+        return ApiResponse.success(token);
+    }
+
+    public ApiResponse<Object> checkTable(Integer id, LocalDateTime openedAt) {
+        TableEntity tableEntity = tableRepository.findById(id).orElse(null);
+
+        if (tableEntity == null) {
+            return ApiResponse.error(ResultCode.TABLE_NOT_EXIST);
+        }
+
+        if (!tableEntity.getOpenedAt().isEqual(openedAt)) {
+            return ApiResponse.error(ResultCode.NOT_SAME_GUEST);
+        }
+
+        return ApiResponse.success();
+
     }
 
     public ApiResponse<TableResponse> getTable(String code) {
@@ -84,7 +101,23 @@ public class TableService {
                     .build();
             return ApiResponse.success(tableResponse);
         } else {
-            return ApiResponse.error("401", "無此桌子");
+            return ApiResponse.error(ResultCode.TABLE_NOT_EXIST);
         }
+    }
+
+    public ApiResponse<TableStatusResponse> getTableStatus(Integer id) {
+        TableEntity tableEntity = tableRepository.findById(id).orElse(null);
+        if (tableEntity == null) {
+            return ApiResponse.error(ResultCode.TABLE_NOT_EXIST);
+        }
+
+        TableStatusDto tableStatusDto = mainOrderRepository.getTableStatus(id);
+
+        TableStatusResponse tableStatusResponse = TableStatusResponse.builder()
+                .isOpened(tableStatusDto.isOpened())
+                .orderCount(tableStatusDto.getOrderCount())
+                .build();
+
+        return ApiResponse.success(tableStatusResponse);
     }
 }

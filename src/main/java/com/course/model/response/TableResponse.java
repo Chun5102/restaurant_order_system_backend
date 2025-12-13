@@ -20,6 +20,9 @@ public class TableResponse {
     @Schema(description = "桌子開啟時間")
     private LocalDateTime openedAt;
 
+    @Schema(description = "桌子到期時間")
+    private LocalDateTime expiryTime;
+
     @Schema(description = "桌子QR Code")
     private String qrCode;
 

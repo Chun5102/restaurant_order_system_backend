@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.course.entity.MenuEntity;
 import com.course.enums.MenuStatus;
+import com.course.enums.ResultCode;
 import com.course.model.request.MenuRequest;
 import com.course.model.response.ApiResponse;
 import com.course.model.response.MenuManageResponse;
@@ -27,14 +28,11 @@ public class MenuService {
 	@Autowired
 	private MenuRepository menuRepository;
 
-	@Autowired
-	private ServiceHelper helper;
-
 	@Transactional
-	public ApiResponse addMenu(MenuRequest req) throws IOException {
+	public ApiResponse<Object> addMenu(MenuRequest req) throws IOException {
 		boolean isExist = menuRepository.existsByName(req.getName());
 		if (isExist) {
-			return ApiResponse.error("403", "菜單名稱已存在");
+			return ApiResponse.error(ResultCode.MENU_IS_EXIST);
 		}
 
 		ImageInfo imageInfo = processBase64Image(req.getImageBase64(), req.getImageType());
@@ -56,7 +54,7 @@ public class MenuService {
 	}
 
 	@Transactional
-	public ApiResponse updateMenu(Long id, MenuRequest req) throws IOException {
+	public ApiResponse<Object> updateMenu(Long id, MenuRequest req) throws IOException {
 		MenuEntity menuEntity = menuRepository.findById(id).orElse(null);
 		if (menuEntity != null) {
 
@@ -77,11 +75,11 @@ public class MenuService {
 
 			return ApiResponse.success();
 		} else {
-			return ApiResponse.error("401", "無此菜單");
+			return ApiResponse.error(ResultCode.MENU_NOT_EXIST);
 		}
 	}
 
-	public ApiResponse deleteMenu(Long id) {
+	public ApiResponse<Object> deleteMenu(Long id) {
 		MenuEntity menuEntity = menuRepository.findById(id).orElse(null);
 		if (menuEntity != null) {
 
@@ -91,21 +89,21 @@ public class MenuService {
 
 			return ApiResponse.success();
 		} else {
-			return ApiResponse.error("401", "無此菜單");
+			return ApiResponse.error(ResultCode.MENU_NOT_EXIST);
 		}
 	}
 
 	public ApiResponse<MenuManageResponse> getMenuById(Long id) {
 		MenuEntity menuEntity = menuRepository.findById(id).orElse(null);
 		if (menuEntity != null) {
-			return ApiResponse.success(helper.menuConvertToManageResponse(menuEntity));
+			return ApiResponse.success(menuConvertToManageResponse(menuEntity));
 		}
-		return ApiResponse.error("402", "搜索失敗");
+		return ApiResponse.error(ResultCode.MENU_NOT_EXIST);
 	}
 
 	public ApiResponse<List<MenuManageResponse>> getManageMenu() {
 		List<MenuManageResponse> menuList = menuRepository.findAll().stream().map((MenuEntity menu) -> {
-			return helper.menuConvertToManageResponse(menu);
+			return menuConvertToManageResponse(menu);
 		}).collect(Collectors.toList());
 		return ApiResponse.success(menuList);
 	}
@@ -120,7 +118,7 @@ public class MenuService {
 
 			Page<MenuEntity> firstPageResult = menuRepository.getMenuByCategory(category, firstpageable);
 			if (firstPageResult.isEmpty()) {
-				return ApiResponse.error("402", "搜索失敗");
+				return ApiResponse.error(ResultCode.MENU_NOT_EXIST);
 			}
 
 			Integer lastPage = firstPageResult.getTotalPages();
@@ -132,10 +130,52 @@ public class MenuService {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 		Page<MenuResponse> menuList = menuRepository.getMenuByCategory(category, pageable)
 				.map((MenuEntity menu) -> {
-					return helper.menuConvertToResponse(menu);
+					return menuConvertToResponse(menu);
 				});
 
 		return ApiResponse.success(menuList);
+	}
+
+	private MenuManageResponse menuConvertToManageResponse(MenuEntity menuEntity) {
+		MenuManageResponse menuManageResponse = MenuManageResponse.builder()
+				.id(menuEntity.getId())
+				.name(menuEntity.getName())
+				.category(menuEntity.getCategory())
+				.price(menuEntity.getPrice())
+				.description(menuEntity.getDescription())
+				.stock(menuEntity.getStock())
+				.status(menuEntity.getStatus())
+				.imageBase64(generateImageBase64(menuEntity.getImageData(), menuEntity.getImageType()))
+				.build();
+
+		return menuManageResponse;
+	}
+
+	private MenuResponse menuConvertToResponse(MenuEntity menuEntity) {
+		MenuResponse menuResponse = MenuResponse.builder()
+				.id(menuEntity.getId())
+				.name(menuEntity.getName())
+				.category(menuEntity.getCategory())
+				.price(menuEntity.getPrice())
+				.description(menuEntity.getDescription())
+				.imageBase64(generateImageBase64(menuEntity.getImageData(), menuEntity.getImageType()))
+				.build();
+
+		return menuResponse;
+	}
+
+	/**
+	 * 產生圖片 Base64 字串
+	 * 
+	 * @param imageData 圖片資料
+	 * @param imageType 圖片類型
+	 * @return
+	 */
+	private String generateImageBase64(byte[] imageData, String imageType) {
+		return imageData != null && imageType != null
+				? "data:" + imageType + ";base64,"
+						+ Base64.getEncoder().encodeToString(imageData)
+				: null;
 	}
 
 	/**

@@ -35,19 +35,20 @@ public class MenuController {
 
 	@Operation(summary = "新增菜單資料", tags = "菜單")
 	@PostMapping(path = "/addMenu", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ApiResponse addMenu(@Valid @RequestBody MenuRequest req) throws IOException {
+	public ApiResponse<Object> addMenu(@Valid @RequestBody MenuRequest req) throws IOException {
 		return menuService.addMenu(req);
 	}
 
 	@Operation(summary = "更新菜單資料", tags = "菜單")
 	@PutMapping("/updateMenu/{id}")
-	public ApiResponse updateMenu(@PathVariable("id") Long id, @Valid @RequestBody MenuRequest req) throws IOException {
+	public ApiResponse<Object> updateMenu(@PathVariable("id") Long id, @Valid @RequestBody MenuRequest req)
+			throws IOException {
 		return menuService.updateMenu(id, req);
 	}
 
 	@Operation(summary = "刪除菜單資料", tags = "菜單")
 	@PutMapping("/deleteMenu/{id}")
-	public ApiResponse<String> deleteMenu(@PathVariable("id") Long id) {
+	public ApiResponse<Object> deleteMenu(@PathVariable("id") Long id) {
 		return menuService.deleteMenu(id);
 	}
 
